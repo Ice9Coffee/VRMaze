@@ -1,10 +1,68 @@
-# VR-Maze
+# VRMaze
 
- 虚拟现实技术 小作业（一）
+Yet Another Na!ve VR Maze Game...
+
+虚拟现实技术 小作业(一)
+
+## 快速开始 - Quick Start
+
+从[这里](https://github.com/Ice-Cirno/VRMaze/releases)下载apk并安装。
+
+Download release version apk from [here](https://github.com/Ice-Cirno/VRMaze/releases) and install.
+
+启动app，将手机放入[CardBoard](https://arvr.google.com/cardboard/get-cardboard/)，开始游戏！
+
+Launch it, put your phone into [Cardboard](https://arvr.google.com/cardboard/get-cardboard/), and EMJOY!
+
+按下磁扣前进（或直接点击屏幕）。
+
+Press Cardboard trigger (or just your phone screen) to move.
+
+收集❤❤并找到出口处的旗帜🏁！
+
+Collect ❤Hearts❤ and find the Flag🏁!
+
+*（迷路时可以尝试飞行🛫 ！）*
+
+*( If you get stuck, try to fly🛫 ! )*
 
 
 
-## 
+## 效果展示 - Preview
+
+
+
+
+
+## 实现流程 - Workflow
+
+首先，我参考Google VR SDK提供的样例项目`gvr-android-sdk`中的`sdk-hellovr`，熟悉VR项目的实现流程：继承`GvrActivity`实现`GvrView.StereoRenderer`接口即可创建一个简单的VR app。
+
+其中需要实现的最主要的几个方法为：
+
+- 
+
+
+
+## 实现细节 - Details
+
+### 环境
+
+
+
+### 浏览
+
+
+
+### 迷宫
+
+
+
+### 交互
+
+
+
+
 
 
 
@@ -38,7 +96,8 @@ dependencies {
 
 ## 参考 - Reference
 
-- Google VR SDK: https://developers.google.com/vr/reference/android/com/google/vr/sdk/base/package-summary 
+- Google VR SDK: https://developers.google.com/vr/develop/android/get-started 
+- Google VR SDK Doc: https://developers.google.com/vr/reference/android/com/google/vr/sdk/base/package-summary 
 - OpenGL: https://learnopengl-cn.github.io/ 
 - OpenGL ES for Android: https://developer.android.google.cn/reference/android/opengl/package-summary
 - Wavefront OBJ file loader: https://github.com/javagl/Obj

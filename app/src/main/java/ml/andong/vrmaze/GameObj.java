@@ -67,9 +67,8 @@ public class GameObj {
 
     public GameObj(Context context, String modelDir, String objFilename, String textureFilename) {
 
-        objParts = new HashMap<Material, Mesh>();
-        myTransform = new float[16];
-        Matrix.setIdentityM(myTransform, 0);
+        objParts = new HashMap<>();
+        myTransform = Const.IdentityMatrix.clone();
 
         modelTransformVBO = new int[1];
         GLES30.glGenBuffers(1, modelTransformVBO, 0);

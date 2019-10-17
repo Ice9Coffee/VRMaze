@@ -59,6 +59,7 @@ public class Maze {
     private float[] mazePos;
     private int[] intPos;
     private float[] distance;
+    private float[] tmpMatrix;
     private Pair<Integer, Integer> ij;
 
 
@@ -84,6 +85,7 @@ public class Maze {
         intPos = new int[3];
         distance = new float[3];
         ij = new Pair<>(0, 0);
+        tmpMatrix = new float[16];
 
 
         Random random = new Random();
@@ -106,11 +108,10 @@ public class Maze {
     }
 
     public boolean checkIsInWall(float[] pos) {
-        float[] mazPos = new float[4];
-        Matrix.multiplyMV(mazPos, 0, invMazeTransform, 0, pos, 0);
-        int i = Math.round(-mazPos[2]);
-        int j = Math.round(-mazPos[0]);
-        float h = mazPos[1];
+        Matrix.multiplyMV(mazePos, 0, invMazeTransform, 0, pos, 0);
+        int i = Math.round(-mazePos[2]);
+        int j = Math.round(-mazePos[0]);
+        float h = mazePos[1];
         try {
             return 0.0f <= h && h <= 2.1f && maze[i].charAt(j) == '#';
         } catch (IndexOutOfBoundsException e) {
@@ -139,10 +140,12 @@ public class Maze {
         Matrix.invertM(invMazeTransform, 0, mazeTransform, 0);
 
         float[] worldTransform = mazeTransform.clone();
-        float[] tmp = new float[16];
         float x, z, r;
 
         heartPos.clear();
+        for(FloatBuffer buf: childTransform.values()) {
+            buf.clear();
+        }
 
         for(int i = 0; i < sizeX; ++i) {
             for(int j = 0; j < sizeY; ++j) {
@@ -158,9 +161,9 @@ public class Maze {
                         x = randomTable[((i + j     + 2 * k) * 6) % 100] * 0.45f;
                         z = randomTable[((i + j + 1 + 2 * k) * 6) % 100] * 0.45f;
                         r = randomTable[((i + j + 2 + 2 * k) * 6) % 100] * 180f;
-                        Matrix.translateM(tmp, 0, worldTransform, 0, x, 0.0f, z);
-                        Matrix.rotateM(tmp, 0, r, 0.0f, 1.0f, 0.0f);
-                        childTransform.get(flower).put(tmp);
+                        Matrix.translateM(tmpMatrix, 0, worldTransform, 0, x, 0.0f, z);
+                        Matrix.rotateM(tmpMatrix, 0, r, 0.0f, 1.0f, 0.0f);
+                        childTransform.get(flower).put(tmpMatrix);
                     }
                     childTransform.get(block).put(worldTransform);
                 }
@@ -177,9 +180,10 @@ public class Maze {
         for(Map.Entry<GameObj, FloatBuffer> e: childTransform.entrySet()) {
             GameObj obj = e.getKey();
             FloatBuffer buf = e.getValue();
-            int amount = buf.limit() / 16;
-            obj.setTransform(amount, buf.array(), 0);
-            buf.clear();
+            int amount = buf.position() / 16;
+            if(amount > 0) {
+                obj.setTransform(amount, buf.array(), 0);
+            }
         }
 
     }
@@ -259,28 +263,33 @@ public class Maze {
         Matrix.setIdentityM(t, 0);
         Matrix.translateM(t, 0, -0.5f, 1.0f, 0.5f);
         heart.setLocalTransform(t);
+        childTransform.put(heart, FloatBuffer.allocate(childTransformSize));
 
     }
 
 
     public void draw() {
-        for(Map.Entry<GameObj, FloatBuffer> e: childTransform.entrySet()) {
-            int amount = e.getValue().limit() / 16;
-            e.getKey().draw(amount);
-        }
 
+        FloatBuffer heartTrans = childTransform.get(heart);
+        heartTrans.clear();
 
         float[] t = Const.IdentityMatrix.clone();
         Matrix.rotateM(t, 0, rotDeg, 0, 1.0f, 0);
-        float[] tmp = new float[16];
         for(Pair<Integer, Integer> p: heartPos) {
             // 平移到maze的指定位置
             t[12] = -p.second;
             t[14] = -p.first;
-            Matrix.multiplyMM(tmp, 0, mazeTransform, 0, t, 0);
-            heart.setTransform(tmp, 0);
-            heart.draw();
+            Matrix.multiplyMM(tmpMatrix, 0, mazeTransform, 0, t, 0);
+            heartTrans.put(tmpMatrix);
         }
+        heart.setTransform(heartTrans.position() / 16, heartTrans.array(), 0);
+        // Log.d(TAG, "heart amount = " + (heartTrans.position() / 16));
+
+        for(Map.Entry<GameObj, FloatBuffer> e: childTransform.entrySet()) {
+            int amount = e.getValue().position() / 16;
+            e.getKey().draw(amount);
+        }
+
     }
 
     public void increaseRotDeg(float delta) {
