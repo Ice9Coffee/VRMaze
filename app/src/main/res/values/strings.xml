@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">VRMaze</string>
+
+    <string name="title_activity_main">VRMazeActivity</string>
+</resources>
