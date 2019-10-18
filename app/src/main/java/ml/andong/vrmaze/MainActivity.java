@@ -124,7 +124,7 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
         camera = new float[16];
         view = new float[16];
         headView = new float[16];
-        projectionM = new float[16];
+        // projectionM = new float[16];
 
         // Player
         playerPos = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
@@ -272,12 +272,15 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
 
         // 计算player的位置，得到camera变换
         if(playerIsWalking) {
-            // Update player position
 
+            // Update player position
             for(int i=0; i<3; ++i) {
                 playerPos2[i] = playerPos[i] + playerForward[i] * PLAYER_VELOCITY / frameRate;
                 if(!maze.checkIsInWall(playerPos2)) {
                     playerPos[i] = MathUtils.clamp(playerPos2[i], min[i], max[i]);
+                }
+                else {
+                    playerPos2[i] = playerPos[i];
                 }
             }
 
@@ -319,12 +322,12 @@ public class MainActivity extends GvrActivity implements GvrView.StereoRenderer 
 
         // camera -> view
         Matrix.multiplyMM(view, 0, eye.getEyeView(), 0, camera, 0);
-        float[] perspective = eye.getPerspective(Z_NEAR, Z_FAR);
+        projectionM = eye.getPerspective(Z_NEAR, Z_FAR);
 
         // 向着色器传递view和projection
         GLES30.glUseProgram(glProgram);
         GLES30.glUniformMatrix4fv(glViewUniform, 1, false, view, 0);
-        GLES30.glUniformMatrix4fv(glProjectionUniform, 1, false, perspective, 0);
+        GLES30.glUniformMatrix4fv(glProjectionUniform, 1, false, projectionM, 0);
 
 
         room.draw();
