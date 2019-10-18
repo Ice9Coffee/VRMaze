@@ -32,9 +32,9 @@ Collect ❤Hearts❤ and find the Flag🏁!
 
 *详见preview文件夹*
 
-![起点](blob/master/preview/preview1.gif)
+![起点](preview/preview1.gif)
 
-![终点](blob/master/preview/preview2.gif)
+![终点](preview/preview2.gif)
 
 
 

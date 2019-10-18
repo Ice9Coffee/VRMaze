@@ -2,6 +2,7 @@
 .cxx
 *.mp4
 *.pdf
+VRMaze.zip
 
 # Built application files
 *.apk
